@@ -1,0 +1,83 @@
+{
+  "exports": [
+    {
+      "object": "RC_LCA_L",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_LCA_L.stl"
+    },
+    {
+      "object": "RC_UCA_L",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_UCA_L.stl"
+    },
+    {
+      "object": "RC_Knuckle_L",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_Knuckle_L.stl"
+    },
+    {
+      "object": "RC_LCA_R",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_LCA_R.stl"
+    },
+    {
+      "object": "RC_UCA_R",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_UCA_R.stl"
+    },
+    {
+      "object": "RC_Knuckle_R",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_Knuckle_R.stl"
+    },
+    {
+      "object": "RC_ServoHorn",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_ServoHorn.stl"
+    },
+    {
+      "object": "RC_TieRod_L",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_TieRod_L.stl"
+    },
+    {
+      "object": "RC_TieRod_R",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_TieRod_R.stl"
+    },
+    {
+      "object": "RC_ShockBody_L",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_ShockBody_L.stl"
+    },
+    {
+      "object": "RC_ShockRod_L",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_ShockRod_L.stl"
+    },
+    {
+      "object": "RC_Spring_L",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_Spring_L.stl"
+    },
+    {
+      "object": "RC_ShockBody_R",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_ShockBody_R.stl"
+    },
+    {
+      "object": "RC_ShockRod_R",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_ShockRod_R.stl"
+    },
+    {
+      "object": "RC_Spring_R",
+      "format": "STL",
+      "path": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\RC_Spring_R.stl"
+    }
+  ],
+  "bom_csv": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\BOM.csv",
+  "bom_json": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\BOM.json",
+  "assembly": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01\\ASSEMBLY.md",
+  "split_notes": []
+}

@@ -1,0 +1,253 @@
+{
+  "environment": {
+    "blender_version": "5.0.1",
+    "blender_binary": "C:\\Blender\\blender.exe",
+    "factory_startup": true
+  },
+  "install_enable": {
+    "install_enable": {
+      "ok": true,
+      "duration_s": 0.1145140000153333,
+      "result": "{'enabled': True}"
+    }
+  },
+  "enable_disable_cycles": {
+    "cycles": [
+      {
+        "cycle": 1,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.003470800002105534,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.0018982000183314085,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      },
+      {
+        "cycle": 2,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.0004811999970115721,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.0017386999970767647,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      },
+      {
+        "cycle": 3,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.000464899989310652,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.0017308000242337584,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      },
+      {
+        "cycle": 4,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.0004626000009011477,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.001819700002670288,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      },
+      {
+        "cycle": 5,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.00047420000191777945,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.002029499999480322,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      },
+      {
+        "cycle": 6,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.0008246000215876848,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.0021194999862927943,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      },
+      {
+        "cycle": 7,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.0005982999864500016,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.0017942999838851392,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      },
+      {
+        "cycle": 8,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.0004972999740857631,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.0017608999914955348,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      },
+      {
+        "cycle": 9,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.0004659999976865947,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.0017544000002089888,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      },
+      {
+        "cycle": 10,
+        "disable": {
+          "ok": true,
+          "duration_s": 0.0004757999849971384,
+          "result": "{'enabled': False}"
+        },
+        "enable": {
+          "ok": true,
+          "duration_s": 0.0017513999773655087,
+          "result": "{'FINISHED'}"
+        },
+        "enabled_after": true
+      }
+    ],
+    "all_enabled_after": true
+  },
+  "e2e": {
+    "setup": {
+      "ok": true,
+      "duration_s": 0.012468000000808388,
+      "result": "{'auto_capture': \"{'FINISHED'}\", 'validate_references': \"{'FINISHED'}\", 'validate_hardpoints': \"{'FINISHED'}\"}"
+    },
+    "generate_all": {
+      "ok": true,
+      "duration_s": 0.08210210001561791,
+      "result": "{'FINISHED'}"
+    },
+    "generated_count_after_generate_all": 15,
+    "update_all": {
+      "ok": true,
+      "duration_s": 0.07936459998018108,
+      "result": "{'FINISHED'}"
+    },
+    "printability_checks": {
+      "ok": true,
+      "duration_s": 0.008995500014862046,
+      "result": "{'FINISHED'}"
+    },
+    "export_pack": {
+      "ok": true,
+      "duration_s": 0.051030200003879145,
+      "result": "{'FINISHED'}"
+    },
+    "export_artifacts": {
+      "export_dir": "c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_outputs\\exports\\EVAL_RUNTIME_01",
+      "expected_files": {
+        "BOM.csv": true,
+        "BOM.json": true,
+        "ASSEMBLY.md": true,
+        "manifest.json": true
+      },
+      "stl_count": 15
+    }
+  },
+  "performance": {
+    "small_update_all": {
+      "ok": true,
+      "duration_s": 0.8483418999821879,
+      "result": "{'rounds': 10, 'times_s': [0.08644849999109283, 0.08360849999007769, 0.0817189000081271, 0.08052059999317862, 0.08576789998915046, 0.08579960002680309, 0.08394559999578632, 0.08409279998159036, 0.08427500000107102, 0.0921053999918513], 'p50_s': 0.08418389999133069, 'p95_s': 0.0921053999918513, 'min_s': 0.08052059999317862, 'max_s': 0.0921053999918513}"
+    },
+    "add_heavy_scene": {
+      "ok": true,
+      "duration_s": 0.01064229998155497,
+      "result": "None"
+    },
+    "large_update_all": {
+      "ok": true,
+      "duration_s": 0.6864574000064749,
+      "result": "{'rounds': 5, 'times_s': [0.15807370000402443, 0.1157416999922134, 0.1506288999808021, 0.14716769999358803, 0.11480069998651743], 'p50_s': 0.14716769999358803, 'p95_s': 0.15807370000402443, 'min_s': 0.11480069998651743, 'max_s': 0.15807370000402443}"
+    }
+  },
+  "stability": {
+    "update_all_100x": {
+      "ok": true,
+      "duration_s": 9.302943699993193,
+      "result": "{'rounds': 100, 'fails': 0, 'total_s': 9.30293679999886, 'avg_s': 0.09302936799998861}"
+    }
+  },
+  "undo_redo": {
+    "undo": {
+      "ok": false,
+      "duration_s": 4.81999886687845e-05,
+      "error": "Operator bpy.ops.ed.undo.poll() Undo disabled at startup in background-mode (call `ed.undo_push()` to explicitly initialize the undo-system)"
+    },
+    "redo": {
+      "ok": false,
+      "duration_s": 2.0000006770715117e-05,
+      "error": "Operator bpy.ops.ed.redo.poll() Undo disabled at startup in background-mode (call `ed.undo_push()` to explicitly initialize the undo-system)"
+    }
+  },
+  "persistence": {
+    "save_reopen": {
+      "ok": true,
+      "duration_s": 0.03852029997506179,
+      "result": "{'blend_path': 'c:\\\\Users\\\\u60897\\\\Documents\\\\my-mechanical-addon\\\\eval_outputs\\\\runtime_eval_scene.blend', 'generated_before': 15, 'generated_after': 15}"
+    }
+  },
+  "errors": [
+    {
+      "label": "undo",
+      "error": "Operator bpy.ops.ed.undo.poll() Undo disabled at startup in background-mode (call `ed.undo_push()` to explicitly initialize the undo-system)",
+      "traceback": "Traceback (most recent call last):\n  File \"c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_runtime_blender.py\", line 44, in safe_call\n    out = fn()\n          ^^^^\n  File \"c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_runtime_blender.py\", line 170, in <lambda>\n    results[\"undo_redo\"][\"undo\"] = safe_call(\"undo\", lambda: bpy.ops.ed.undo())\n                                                             ^^^^^^^^^^^^^^^^^\n  File \"C:\\Blender\\5.0\\scripts\\modules\\bpy\\ops.py\", line 109, in __call__\n    ret = _op_call(self.idname_py(), kw)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Operator bpy.ops.ed.undo.poll() Undo disabled at startup in background-mode (call `ed.undo_push()` to explicitly initialize the undo-system)\n"
+    },
+    {
+      "label": "redo",
+      "error": "Operator bpy.ops.ed.redo.poll() Undo disabled at startup in background-mode (call `ed.undo_push()` to explicitly initialize the undo-system)",
+      "traceback": "Traceback (most recent call last):\n  File \"c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_runtime_blender.py\", line 44, in safe_call\n    out = fn()\n          ^^^^\n  File \"c:\\Users\\u60897\\Documents\\my-mechanical-addon\\eval_runtime_blender.py\", line 171, in <lambda>\n    results[\"undo_redo\"][\"redo\"] = safe_call(\"redo\", lambda: bpy.ops.ed.redo())\n                                                             ^^^^^^^^^^^^^^^^^\n  File \"C:\\Blender\\5.0\\scripts\\modules\\bpy\\ops.py\", line 109, in __call__\n    ret = _op_call(self.idname_py(), kw)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Operator bpy.ops.ed.redo.poll() Undo disabled at startup in background-mode (call `ed.undo_push()` to explicitly initialize the undo-system)\n"
+    }
+  ],
+  "warnings": []
+}

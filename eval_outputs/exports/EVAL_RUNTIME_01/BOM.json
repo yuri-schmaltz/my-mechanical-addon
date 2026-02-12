@@ -1,0 +1,97 @@
+{
+  "rcgen_id": "EVAL_RUNTIME_01",
+  "generated_at": "2026-02-12T22:43:51.594705Z",
+  "hardware_default": "M3",
+  "rows": [
+    {
+      "item": "Screw_M3",
+      "qty": 20,
+      "notes": "Estimated by generator topology"
+    },
+    {
+      "item": "Nut_M3",
+      "qty": 20,
+      "notes": "Estimated by generator topology"
+    },
+    {
+      "item": "Insert_M3",
+      "qty": 4,
+      "notes": "Estimated by generator topology"
+    },
+    {
+      "item": "RC_LCA_L",
+      "qty": 1,
+      "notes": "module=suspension, side=L"
+    },
+    {
+      "item": "RC_UCA_L",
+      "qty": 1,
+      "notes": "module=suspension, side=L"
+    },
+    {
+      "item": "RC_Knuckle_L",
+      "qty": 1,
+      "notes": "module=suspension, side=L"
+    },
+    {
+      "item": "RC_LCA_R",
+      "qty": 1,
+      "notes": "module=suspension, side=R"
+    },
+    {
+      "item": "RC_UCA_R",
+      "qty": 1,
+      "notes": "module=suspension, side=R"
+    },
+    {
+      "item": "RC_Knuckle_R",
+      "qty": 1,
+      "notes": "module=suspension, side=R"
+    },
+    {
+      "item": "RC_ServoHorn",
+      "qty": 1,
+      "notes": "module=steering, side=C"
+    },
+    {
+      "item": "RC_TieRod_L",
+      "qty": 1,
+      "notes": "module=steering, side=L"
+    },
+    {
+      "item": "RC_TieRod_R",
+      "qty": 1,
+      "notes": "module=steering, side=R"
+    },
+    {
+      "item": "RC_ShockBody_L",
+      "qty": 1,
+      "notes": "module=shock, side=L"
+    },
+    {
+      "item": "RC_ShockRod_L",
+      "qty": 1,
+      "notes": "module=shock, side=L"
+    },
+    {
+      "item": "RC_Spring_L",
+      "qty": 1,
+      "notes": "module=shock, side=L"
+    },
+    {
+      "item": "RC_ShockBody_R",
+      "qty": 1,
+      "notes": "module=shock, side=R"
+    },
+    {
+      "item": "RC_ShockRod_R",
+      "qty": 1,
+      "notes": "module=shock, side=R"
+    },
+    {
+      "item": "RC_Spring_R",
+      "qty": 1,
+      "notes": "module=shock, side=R"
+    }
+  ]
+}

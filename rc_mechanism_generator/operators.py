@@ -959,6 +959,19 @@ def _split_object_for_export(
     return [part_a, part_b], pin_objs, warnings
 
 
+def _export_selected_stl(filepath: str) -> tuple[bool, str]:
+    try:
+        bpy.ops.export_mesh.stl(filepath=filepath, use_selection=True, check_existing=False, ascii=False)
+        return True, ""
+    except Exception:
+        pass
+    try:
+        bpy.ops.wm.stl_export(filepath=filepath, export_selected_objects=True, check_existing=False)
+        return True, ""
+    except Exception as exc:
+        return False, str(exc)
+
+
 def _write_manufacturing_pack(context: bpy.types.Context, scene: bpy.types.Scene, operator: bpy.types.Operator) -> bool:
     settings = scene.rcgen_settings
     tol = scene.rcgen_tolerances
@@ -1013,8 +1026,13 @@ def _write_manufacturing_pack(context: bpy.types.Context, scene: bpy.types.Scene
             base_path = os.path.join(set_dir, obj.name)
             if settings.export_stl:
                 stl_path = base_path + ".stl"
-                bpy.ops.export_mesh.stl(filepath=stl_path, use_selection=True, check_existing=False, ascii=False)
-                exported.append({"object": obj.name, "format": "STL", "path": stl_path})
+                ok_stl, stl_error = _export_selected_stl(stl_path)
+                if ok_stl:
+                    exported.append({"object": obj.name, "format": "STL", "path": stl_path})
+                else:
+                    operator.report({"ERROR"}, f"STL export unavailable/failed: {stl_error}")
+                    _restore_selection(context, before_sel, before_active)
+                    return False
             if settings.export_3mf:
                 if hasattr(bpy.ops.export_mesh, "threemf"):
                     path_3mf = base_path + ".3mf"

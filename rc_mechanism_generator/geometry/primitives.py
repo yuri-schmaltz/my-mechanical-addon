@@ -79,6 +79,7 @@ def add_helix_spring(
     turns: float,
     radial_segments: int,
     path_steps_per_turn: int = 18,
+    cap_ends: bool = True,
 ) -> None:
     axis = end - start
     length = axis.length
@@ -123,3 +124,12 @@ def add_helix_spring(
                 bm.faces.new(face_verts)
             except ValueError:
                 pass
+    if cap_ends and rings:
+        try:
+            bm.faces.new(tuple(reversed(rings[0])))
+        except ValueError:
+            pass
+        try:
+            bm.faces.new(tuple(rings[-1]))
+        except ValueError:
+            pass

@@ -1,0 +1,19 @@
+item,qty,notes
+Screw_M3,20,Estimated by generator topology
+Nut_M3,20,Estimated by generator topology
+Insert_M3,4,Estimated by generator topology
+RC_LCA_L,1,"module=suspension, side=L"
+RC_UCA_L,1,"module=suspension, side=L"
+RC_Knuckle_L,1,"module=suspension, side=L"
+RC_LCA_R,1,"module=suspension, side=R"
+RC_UCA_R,1,"module=suspension, side=R"
+RC_Knuckle_R,1,"module=suspension, side=R"
+RC_ServoHorn,1,"module=steering, side=C"
+RC_TieRod_L,1,"module=steering, side=L"
+RC_TieRod_R,1,"module=steering, side=R"
+RC_ShockBody_L,1,"module=shock, side=L"
+RC_ShockRod_L,1,"module=shock, side=L"
+RC_Spring_L,1,"module=shock, side=L"
+RC_ShockBody_R,1,"module=shock, side=R"
+RC_ShockRod_R,1,"module=shock, side=R"
+RC_Spring_R,1,"module=shock, side=R"
