@@ -24,7 +24,7 @@
 ## 1) Sumario executivo
 
 - Status geral: ✅ Aprovado (com riscos nao bloqueadores)
-- Pontuacao total: **82/100**
+- Pontuacao total: **81/100**
 - Principais pontos fortes:
   - Instalacao/ativacao e ciclo de enable/disable funcionando.
   - Fluxos E2E criticos funcionando: `Generate All`, `Update All`, `Run Printability Checks`, `Export Manufacturing Pack`.
@@ -295,9 +295,9 @@ C:\Blender\blender.exe --factory-startup -b --python c:\Users\u60897\Documents\m
 | Performance | 10 | 4.0 | 8.0 |
 | Seguranca/Privacidade | 10 | 4.0 | 8.0 |
 | UX/Acessibilidade | 10 | 3.5 | 7.0 |
-| Qualidade de codigo/manutencao | 10 | 3.0 | 6.0 |
-| Documentacao/Onboarding | 5 | 3.3 | 6.5 |
-| TOTAL | 100 |  | **82.0** |
+| Qualidade de codigo/manutencao | 10 | 4.0 | 8.0 |
+| Documentacao/Onboarding | 5 | 3.5 | 3.5 |
+| TOTAL | 100 |  | **81.0** |
 
 ### 14.1 Criterio de decisao
 - Resultado: ✅ Aprovado (com melhorias recomendadas antes de release publico amplo).
