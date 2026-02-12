@@ -70,6 +70,11 @@
 | Escala UI 125%/150% | Avaliacao foi headless | Abrir painel RC em GUI e validar clipping/overflow | QA |
 | Matriz 3.6 LTS e 4.x | Runtime executado em 5.0.1 | Repetir suite com os mesmos scripts em 3.6/4.x | QA |
 
+Resultado complementar executado em 12/02/2026:
+- Foi rodada uma validacao adicional em `eval_gui_complementary.py` (headless).
+- Undo/Redo continuou indisponivel para verificacao (`context is incorrect` em `bpy.ops.ed.undo/redo` no modo background).
+- Escala UI 1.0/1.25/1.5 foi ajustada programaticamente, mas sem viewport nao ha como confirmar clipping visual.
+
 ---
 
 ## 3) Matriz de ambientes e reprodutibilidade
@@ -418,6 +423,7 @@ C:\Blender\blender.exe --factory-startup -b --python c:\Users\u60897\Documents\m
 | E-008 | Codigo | `rc_mechanism_generator/dfm/checks.py` | Regras de printability |
 | E-009 | Codigo | `rc_mechanism_generator/utils/validation.py` | Validacoes de refs/hardpoints |
 | E-010 | Docs | `README.md` | Fluxo e troubleshooting |
+| E-011 | Runtime complementar | `eval_outputs/gui_complementary_results.json` | Resultado de teste adicional de Undo/Redo e escala UI em headless |
 
 ---
 

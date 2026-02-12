@@ -1,0 +1,29 @@
+{
+  "blender_version": "5.0.1",
+  "undo_redo": {
+    "count_after_generate": 15,
+    "count_after_update": 15,
+    "undo_ok": false,
+    "redo_ok": false,
+    "count_after_undo_redo": 15,
+    "undo_error": "Operator bpy.ops.ed.undo.poll() failed, context is incorrect",
+    "redo_error": "Operator bpy.ops.ed.redo.poll() failed, context is incorrect"
+  },
+  "ui_scale_checks": {
+    "1.0": {
+      "set_ok": true,
+      "note": "Headless mode: sem viewport para validar clipping/overflow visual."
+    },
+    "1.25": {
+      "set_ok": true,
+      "note": "Headless mode: sem viewport para validar clipping/overflow visual."
+    },
+    "1.5": {
+      "set_ok": true,
+      "note": "Headless mode: sem viewport para validar clipping/overflow visual."
+    }
+  },
+  "notes": [
+    "Validacao visual de clipping requer Blender GUI interativo."
+  ]
+}

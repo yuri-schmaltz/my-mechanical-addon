@@ -8,6 +8,16 @@ Addon Blender (3.6 LTS e 4.x) para gerar e fabricar mecanismos RC print-ready:
 - checks DFM basicos,
 - export manufacturing pack (STL/3MF + BOM + assembly notes).
 
+## Documentacao completa
+
+A documentacao completa da aplicacao esta em `docs/README.md`, incluindo:
+
+- visao geral funcional e tecnica,
+- guia de usuario,
+- arquitetura do sistema,
+- referencia de operadores e propriedades,
+- guia de desenvolvimento e release.
+
 ## Estrutura
 
 - `rc_mechanism_generator/__init__.py`
