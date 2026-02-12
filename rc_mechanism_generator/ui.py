@@ -65,6 +65,7 @@ class RCGEN_PT_MainPanel(bpy.types.Panel):
         self._draw_suspension(layout, settings)
         self._draw_steering(layout, refs, settings)
         self._draw_shocks(layout, refs, settings)
+        self._draw_mcp(layout, settings)
         self._draw_dfm_export(layout, settings)
 
     def _draw_overview(self, layout, settings, refs):
@@ -291,6 +292,53 @@ class RCGEN_PT_MainPanel(bpy.types.Panel):
         actions.operator("rcgen.run_printability_checks", text="Rodar Verificacoes de Impressao", icon="CHECKMARK")
         actions.operator("rcgen.export_manufacturing_pack", text="Exportar Pacote de Fabricacao", icon="EXPORT")
         actions.operator("rcgen.organize_collections", text="Organizar Colecoes", icon="OUTLINER_COLLECTION")
+
+    def _draw_mcp(self, layout, settings):
+        box = layout.box()
+        _draw_section_toggle(box, settings, "ui_show_mcp", "MCP", "URL")
+        if not settings.ui_show_mcp:
+            return
+
+        box.prop(settings, "mcp_enabled", text="Ativar MCP")
+        box.prop(settings, "mcp_transport", text="Transporte")
+        if settings.mcp_transport == "STDIO":
+            box.prop(settings, "mcp_stdio_command", text="Comando MCP")
+            box.prop(settings, "mcp_stdio_cwd", text="Diretorio de Trabalho")
+        else:
+            box.prop(settings, "mcp_endpoint_url", text="Endpoint")
+        box.prop(settings, "mcp_protocol_version", text="Protocol Version")
+        box.prop(settings, "mcp_timeout_sec", text="Timeout (s)")
+
+        row = box.row(align=True)
+        row.operator("rcgen.test_mcp_connection", text="Testar Conexao MCP", icon="LINKED")
+
+        status = box.row(align=True)
+        text = settings.mcp_last_status.strip()
+        if text.startswith("OK:"):
+            status.label(text=text, icon="CHECKMARK")
+        elif text.startswith("ERROR:"):
+            status.alert = True
+            status.label(text=text, icon="ERROR")
+        else:
+            status.label(text=f"Status: {text}", icon="INFO")
+
+        box.separator()
+        box.label(text="Tools/Call", icon="TOOL_SETTINGS")
+        box.prop(settings, "mcp_tool_name", text="Nome da Tool")
+        box.prop(settings, "mcp_tool_args_json", text="Args (JSON)")
+
+        call_row = box.row(align=True)
+        call_row.operator("rcgen.call_mcp_tool", text="Executar Tool MCP", icon="PLAY")
+
+        tool_result = box.row(align=True)
+        result_text = settings.mcp_last_tool_result.strip()
+        if result_text.startswith("OK:"):
+            tool_result.label(text=result_text, icon="CHECKMARK")
+        elif result_text.startswith("ERROR:"):
+            tool_result.alert = True
+            tool_result.label(text=result_text, icon="ERROR")
+        else:
+            tool_result.label(text=result_text, icon="INFO")
 
 
 classes = (RCGEN_PT_MainPanel,)

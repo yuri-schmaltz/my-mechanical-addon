@@ -1,0 +1,18 @@
+schema_version = "1.0.0"
+
+id = "rc_mechanism_generator"
+name = "RC Mechanism Generator"
+version = "0.1.0"
+tagline = "Generate RC suspension, steering and manufacturing pack"
+maintainer = "Codex"
+type = "add-on"
+
+blender_version_min = "4.2.0"
+
+license = [
+  "SPDX:GPL-3.0-or-later",
+]
+
+copyright = [
+  "2026 Codex",
+]

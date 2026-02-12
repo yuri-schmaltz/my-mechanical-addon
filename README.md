@@ -7,6 +7,7 @@ Addon Blender (3.6 LTS e 4.x) para gerar e fabricar mecanismos RC print-ready:
 - coilover com inferencia de shock mounts,
 - checks DFM basicos,
 - export manufacturing pack (STL/3MF + BOM + assembly notes).
+- suporte opcional de conexao MCP (HTTP) para integracao com servidores MCP.
 
 ## Documentacao completa
 
@@ -36,6 +37,33 @@ A documentacao completa da aplicacao esta em `docs/README.md`, incluindo:
 2. Blender: `Edit > Preferences > Add-ons > Install...`.
 3. Ative `RC Mechanism Generator`.
 4. Abra `3D Viewport > Sidebar (N) > RC`.
+
+## Modo Extension (Blender 4.2+)
+
+O pacote agora inclui `rc_mechanism_generator/blender_manifest.toml`, permitindo uso como Extension no ecossistema de extensoes do Blender.
+
+## MCP (opcional)
+
+No painel `MCP`:
+
+1. Ative `Ativar MCP`.
+2. Escolha `Transporte`:
+   - `HTTP`: definir `Endpoint` (ex.: `http://127.0.0.1:6277/mcp`)
+   - `STDIO`: definir `Comando MCP` (ex.: `python -m seu_servidor_mcp`) e, opcionalmente, `Diretorio de Trabalho`
+3. Ajuste `Protocol Version` e `Timeout`.
+4. Clique em `Testar Conexao MCP`.
+
+O teste executa handshake `initialize` + `notifications/initialized` + `tools/list`.
+
+### Execucao de tool MCP
+
+Na mesma secao `MCP`:
+
+1. Preencha `Nome da Tool`.
+2. Preencha `Args (JSON)` como objeto JSON (ex.: `{\"path\": \"//\"}`).
+3. Clique em `Executar Tool MCP`.
+
+O addon chama `tools/call` e mostra o resultado resumido em `MCP Last Tool Result`.
 
 ## Checklist obrigatorio
 

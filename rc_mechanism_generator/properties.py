@@ -169,6 +169,22 @@ class RCGEN_Settings(bpy.types.PropertyGroup):
     export_stl: BoolProperty(name="Export STL", default=True)
     export_3mf: BoolProperty(name="Export 3MF", default=False)
 
+    mcp_enabled: BoolProperty(name="Enable MCP", default=False)
+    mcp_transport: EnumProperty(
+        name="MCP Transport",
+        items=(("HTTP", "HTTP", ""), ("STDIO", "STDIO", "")),
+        default="HTTP",
+    )
+    mcp_endpoint_url: StringProperty(name="MCP Endpoint", default="http://127.0.0.1:6277/mcp")
+    mcp_stdio_command: StringProperty(name="MCP Command", default="")
+    mcp_stdio_cwd: StringProperty(name="MCP Working Dir", subtype="DIR_PATH", default="")
+    mcp_protocol_version: StringProperty(name="MCP Protocol Version", default="2025-11-25")
+    mcp_timeout_sec: FloatProperty(name="MCP Timeout (s)", default=5.0, min=1.0, max=60.0)
+    mcp_last_status: StringProperty(name="MCP Last Status", default="Not tested")
+    mcp_tool_name: StringProperty(name="MCP Tool Name", default="")
+    mcp_tool_args_json: StringProperty(name="MCP Tool Args JSON", default="{}")
+    mcp_last_tool_result: StringProperty(name="MCP Last Tool Result", default="Not executed")
+
     ui_show_project: BoolProperty(name="Project", default=True)
     ui_show_tolerances: BoolProperty(name="Tolerances", default=True)
     ui_show_refs: BoolProperty(name="Refs", default=True)
@@ -176,6 +192,7 @@ class RCGEN_Settings(bpy.types.PropertyGroup):
     ui_show_suspension: BoolProperty(name="Suspension", default=True)
     ui_show_steering: BoolProperty(name="Steering", default=True)
     ui_show_shocks: BoolProperty(name="Shocks", default=True)
+    ui_show_mcp: BoolProperty(name="MCP", default=True)
     ui_show_dfm_export: BoolProperty(name="DFM Export", default=True)
 
 

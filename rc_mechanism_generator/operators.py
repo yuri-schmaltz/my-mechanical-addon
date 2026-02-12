@@ -4,7 +4,13 @@ import csv
 import json
 import math
 import os
+import queue
+import shlex
+import subprocess
+import threading
 from datetime import datetime
+from urllib import error as urlerror
+from urllib import request as urlrequest
 
 import bmesh
 import bpy
@@ -83,6 +89,330 @@ _AUTO_HP_NAME_MAP = {
     "shock_top_r": ("shocktop_r", "shock_top_r"),
     "shock_bottom_r": ("shockbottom_r", "shock_bottom_r"),
 }
+
+
+def _mcp_http_request(url: str, payload: dict, timeout: float, session_id: str = "") -> tuple[dict, str]:
+    req = urlrequest.Request(
+        url=url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json", **({"MCP-Session-Id": session_id} if session_id else {})},
+        method="POST",
+    )
+    with urlrequest.urlopen(req, timeout=timeout) as response:
+        body = response.read().decode("utf-8", errors="replace")
+        data = json.loads(body) if body else {}
+        response_session = response.headers.get("Mcp-Session-Id") or response.headers.get("MCP-Session-Id") or session_id
+        return data, response_session
+
+
+def _mcp_encode_message(payload: dict) -> bytes:
+    body = json.dumps(payload).encode("utf-8")
+    header = f"Content-Length: {len(body)}\r\n\r\n".encode("ascii")
+    return header + body
+
+
+def _mcp_read_loop(stdout_pipe, out_queue: queue.Queue):
+    while True:
+        header = bytearray()
+        while b"\r\n\r\n" not in header:
+            chunk = stdout_pipe.read(1)
+            if not chunk:
+                return
+            header.extend(chunk)
+            if len(header) > 8192:
+                out_queue.put({"_error": "MCP header too large."})
+                return
+        header_text = header.decode("ascii", errors="ignore")
+        content_length = None
+        for line in header_text.split("\r\n"):
+            if line.lower().startswith("content-length:"):
+                try:
+                    content_length = int(line.split(":", 1)[1].strip())
+                except ValueError:
+                    out_queue.put({"_error": "Invalid Content-Length in MCP response."})
+                    return
+        if content_length is None:
+            out_queue.put({"_error": "Missing Content-Length in MCP response."})
+            return
+        body = stdout_pipe.read(content_length)
+        if not body or len(body) != content_length:
+            out_queue.put({"_error": "Incomplete MCP message body."})
+            return
+        try:
+            out_queue.put(json.loads(body.decode("utf-8", errors="replace")))
+        except json.JSONDecodeError as exc:
+            out_queue.put({"_error": f"Invalid JSON from MCP server: {exc}"})
+            return
+
+
+def _mcp_stdio_send(stdin_pipe, payload: dict) -> None:
+    stdin_pipe.write(_mcp_encode_message(payload))
+    stdin_pipe.flush()
+
+
+def _mcp_wait_id(out_queue: queue.Queue, expected_id: int, timeout: float) -> tuple[bool, dict | str]:
+    while True:
+        try:
+            msg = out_queue.get(timeout=timeout)
+        except queue.Empty:
+            return False, "Timed out waiting MCP response."
+        if "_error" in msg:
+            return False, msg["_error"]
+        if msg.get("id") == expected_id:
+            return True, msg
+
+
+def _test_mcp_connection_http(settings: bpy.types.PropertyGroup) -> tuple[bool, str]:
+    if hasattr(bpy.app, "online_access") and not bpy.app.online_access:
+        return False, "Blender online access disabled in Preferences."
+
+    endpoint = settings.mcp_endpoint_url.strip()
+    if not endpoint:
+        return False, "MCP endpoint is empty."
+    timeout = float(settings.mcp_timeout_sec)
+
+    init_payload = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+            "protocolVersion": settings.mcp_protocol_version.strip() or "2025-11-25",
+            "capabilities": {"tools": {}},
+            "clientInfo": {"name": "RC Mechanism Generator", "version": "0.1.0"},
+        },
+    }
+
+    try:
+        init_resp, session_id = _mcp_http_request(endpoint, init_payload, timeout=timeout)
+        if "error" in init_resp:
+            return False, f"initialize error: {init_resp['error']}"
+        if "result" not in init_resp:
+            return False, "initialize response missing result."
+
+        # MCP initialization notification (optional for tolerant servers, sent for compatibility).
+        _mcp_http_request(
+            endpoint,
+            {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
+            timeout=timeout,
+            session_id=session_id,
+        )
+
+        tools_resp, _ = _mcp_http_request(
+            endpoint,
+            {"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}},
+            timeout=timeout,
+            session_id=session_id,
+        )
+        if "error" in tools_resp:
+            return False, f"tools/list error: {tools_resp['error']}"
+        tools = tools_resp.get("result", {}).get("tools", [])
+        return True, f"Connected. tools={len(tools)}"
+    except (urlerror.URLError, TimeoutError, ValueError, json.JSONDecodeError) as exc:
+        return False, f"MCP connection failed: {exc}"
+
+
+def _call_mcp_tool_http(settings: bpy.types.PropertyGroup, tool_name: str, args: dict) -> tuple[bool, str]:
+    if hasattr(bpy.app, "online_access") and not bpy.app.online_access:
+        return False, "Blender online access disabled in Preferences."
+    endpoint = settings.mcp_endpoint_url.strip()
+    if not endpoint:
+        return False, "MCP endpoint is empty."
+    timeout = float(settings.mcp_timeout_sec)
+    init_payload = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+            "protocolVersion": settings.mcp_protocol_version.strip() or "2025-11-25",
+            "capabilities": {"tools": {}},
+            "clientInfo": {"name": "RC Mechanism Generator", "version": "0.1.0"},
+        },
+    }
+    try:
+        init_resp, session_id = _mcp_http_request(endpoint, init_payload, timeout=timeout)
+        if "error" in init_resp:
+            return False, f"initialize error: {init_resp['error']}"
+        _mcp_http_request(
+            endpoint,
+            {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
+            timeout=timeout,
+            session_id=session_id,
+        )
+        call_resp, _ = _mcp_http_request(
+            endpoint,
+            {
+                "jsonrpc": "2.0",
+                "id": 3,
+                "method": "tools/call",
+                "params": {"name": tool_name, "arguments": args},
+            },
+            timeout=timeout,
+            session_id=session_id,
+        )
+        if "error" in call_resp:
+            return False, f"tools/call error: {call_resp['error']}"
+        result = call_resp.get("result", {})
+        return True, json.dumps(result, ensure_ascii=False)[:1500]
+    except (urlerror.URLError, TimeoutError, ValueError, json.JSONDecodeError) as exc:
+        return False, f"MCP tools/call failed: {exc}"
+
+
+def _test_mcp_connection_stdio(settings: bpy.types.PropertyGroup) -> tuple[bool, str]:
+    command = settings.mcp_stdio_command.strip()
+    if not command:
+        return False, "MCP command is empty."
+    try:
+        argv = shlex.split(command, posix=False)
+    except ValueError as exc:
+        return False, f"Invalid MCP command: {exc}"
+    if not argv:
+        return False, "MCP command is empty."
+
+    cwd = bpy.path.abspath(settings.mcp_stdio_cwd) if settings.mcp_stdio_cwd.strip() else None
+    if cwd and not os.path.isdir(cwd):
+        return False, f"MCP working directory does not exist: {cwd}"
+
+    timeout = float(settings.mcp_timeout_sec)
+    proc = None
+    try:
+        proc = subprocess.Popen(
+            argv,
+            cwd=cwd or None,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=0,
+        )
+        if proc.stdin is None or proc.stdout is None:
+            return False, "Failed to open stdio pipes for MCP process."
+
+        out_queue: queue.Queue = queue.Queue()
+        reader = threading.Thread(target=_mcp_read_loop, args=(proc.stdout, out_queue), daemon=True)
+        reader.start()
+
+        _mcp_stdio_send(
+            proc.stdin,
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": settings.mcp_protocol_version.strip() or "2025-11-25",
+                    "capabilities": {"tools": {}},
+                    "clientInfo": {"name": "RC Mechanism Generator", "version": "0.1.0"},
+                },
+            },
+        )
+        ok_init, init_resp = _mcp_wait_id(out_queue, expected_id=1, timeout=timeout)
+        if not ok_init:
+            return False, str(init_resp)
+        if "error" in init_resp:
+            return False, f"initialize error: {init_resp['error']}"
+        if "result" not in init_resp:
+            return False, "initialize response missing result."
+
+        _mcp_stdio_send(
+            proc.stdin,
+            {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
+        )
+        _mcp_stdio_send(
+            proc.stdin,
+            {"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}},
+        )
+        ok_tools, tools_resp = _mcp_wait_id(out_queue, expected_id=2, timeout=timeout)
+        if not ok_tools:
+            return False, str(tools_resp)
+        if "error" in tools_resp:
+            return False, f"tools/list error: {tools_resp['error']}"
+        tools = tools_resp.get("result", {}).get("tools", [])
+        return True, f"Connected (stdio). tools={len(tools)}"
+    except OSError as exc:
+        return False, f"Failed to launch MCP command: {exc}"
+    finally:
+        if proc is not None and proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=1.0)
+            except Exception:
+                proc.kill()
+
+
+def _call_mcp_tool_stdio(settings: bpy.types.PropertyGroup, tool_name: str, args: dict) -> tuple[bool, str]:
+    command = settings.mcp_stdio_command.strip()
+    if not command:
+        return False, "MCP command is empty."
+    try:
+        argv = shlex.split(command, posix=False)
+    except ValueError as exc:
+        return False, f"Invalid MCP command: {exc}"
+    if not argv:
+        return False, "MCP command is empty."
+    cwd = bpy.path.abspath(settings.mcp_stdio_cwd) if settings.mcp_stdio_cwd.strip() else None
+    if cwd and not os.path.isdir(cwd):
+        return False, f"MCP working directory does not exist: {cwd}"
+    timeout = float(settings.mcp_timeout_sec)
+
+    proc = None
+    try:
+        proc = subprocess.Popen(
+            argv,
+            cwd=cwd or None,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=0,
+        )
+        if proc.stdin is None or proc.stdout is None:
+            return False, "Failed to open stdio pipes for MCP process."
+        out_queue: queue.Queue = queue.Queue()
+        reader = threading.Thread(target=_mcp_read_loop, args=(proc.stdout, out_queue), daemon=True)
+        reader.start()
+
+        _mcp_stdio_send(
+            proc.stdin,
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": settings.mcp_protocol_version.strip() or "2025-11-25",
+                    "capabilities": {"tools": {}},
+                    "clientInfo": {"name": "RC Mechanism Generator", "version": "0.1.0"},
+                },
+            },
+        )
+        ok_init, init_resp = _mcp_wait_id(out_queue, expected_id=1, timeout=timeout)
+        if not ok_init:
+            return False, str(init_resp)
+        if "error" in init_resp:
+            return False, f"initialize error: {init_resp['error']}"
+
+        _mcp_stdio_send(proc.stdin, {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}})
+        _mcp_stdio_send(
+            proc.stdin,
+            {
+                "jsonrpc": "2.0",
+                "id": 3,
+                "method": "tools/call",
+                "params": {"name": tool_name, "arguments": args},
+            },
+        )
+        ok_call, call_resp = _mcp_wait_id(out_queue, expected_id=3, timeout=timeout)
+        if not ok_call:
+            return False, str(call_resp)
+        if "error" in call_resp:
+            return False, f"tools/call error: {call_resp['error']}"
+        result = call_resp.get("result", {})
+        return True, json.dumps(result, ensure_ascii=False)[:1500]
+    except OSError as exc:
+        return False, f"Failed to launch MCP command: {exc}"
+    finally:
+        if proc is not None and proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=1.0)
+            except Exception:
+                proc.kill()
 
 
 def _loc(obj: bpy.types.Object | None) -> Vector | None:
@@ -1349,6 +1679,73 @@ class RCGEN_OT_OrganizeCollections(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class RCGEN_OT_TestMCPConnection(bpy.types.Operator):
+    bl_idname = "rcgen.test_mcp_connection"
+    bl_label = "Test MCP Connection"
+    bl_description = "Test MCP endpoint with initialize + tools/list"
+
+    def execute(self, context: bpy.types.Context):
+        settings = context.scene.rcgen_settings
+        if not settings.mcp_enabled:
+            self.report({"WARNING"}, "MCP is disabled in settings.")
+            settings.mcp_last_status = "Disabled"
+            return {"CANCELLED"}
+
+        if settings.mcp_transport == "STDIO":
+            ok, message = _test_mcp_connection_stdio(settings)
+        else:
+            ok, message = _test_mcp_connection_http(settings)
+        settings.mcp_last_status = ("OK: " if ok else "ERROR: ") + message
+        if ok:
+            self.report({"INFO"}, settings.mcp_last_status)
+            return {"FINISHED"}
+        self.report({"ERROR"}, settings.mcp_last_status)
+        return {"CANCELLED"}
+
+
+class RCGEN_OT_CallMCPTool(bpy.types.Operator):
+    bl_idname = "rcgen.call_mcp_tool"
+    bl_label = "Call MCP Tool"
+    bl_description = "Call MCP tools/call with configured tool name and JSON args"
+
+    def execute(self, context: bpy.types.Context):
+        settings = context.scene.rcgen_settings
+        if not settings.mcp_enabled:
+            settings.mcp_last_tool_result = "ERROR: MCP disabled"
+            self.report({"ERROR"}, settings.mcp_last_tool_result)
+            return {"CANCELLED"}
+
+        tool_name = settings.mcp_tool_name.strip()
+        if not tool_name:
+            settings.mcp_last_tool_result = "ERROR: Tool name is empty"
+            self.report({"ERROR"}, settings.mcp_last_tool_result)
+            return {"CANCELLED"}
+
+        raw_args = settings.mcp_tool_args_json.strip() or "{}"
+        try:
+            parsed_args = json.loads(raw_args)
+        except json.JSONDecodeError as exc:
+            settings.mcp_last_tool_result = f"ERROR: Invalid JSON args: {exc}"
+            self.report({"ERROR"}, settings.mcp_last_tool_result)
+            return {"CANCELLED"}
+        if not isinstance(parsed_args, dict):
+            settings.mcp_last_tool_result = "ERROR: Tool args must be a JSON object."
+            self.report({"ERROR"}, settings.mcp_last_tool_result)
+            return {"CANCELLED"}
+
+        if settings.mcp_transport == "STDIO":
+            ok, message = _call_mcp_tool_stdio(settings, tool_name, parsed_args)
+        else:
+            ok, message = _call_mcp_tool_http(settings, tool_name, parsed_args)
+
+        settings.mcp_last_tool_result = ("OK: " if ok else "ERROR: ") + message
+        if ok:
+            self.report({"INFO"}, f"MCP tool {tool_name} executed.")
+            return {"FINISHED"}
+        self.report({"ERROR"}, settings.mcp_last_tool_result)
+        return {"CANCELLED"}
+
+
 classes = (
     RCGEN_OT_CaptureSelected,
     RCGEN_OT_AutoCaptureByName,
@@ -1367,6 +1764,8 @@ classes = (
     RCGEN_OT_GenerateAll,
     RCGEN_OT_UpdateAll,
     RCGEN_OT_OrganizeCollections,
+    RCGEN_OT_TestMCPConnection,
+    RCGEN_OT_CallMCPTool,
 )
 
 
