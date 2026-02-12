@@ -8,7 +8,7 @@ bl_info = {
     "category": "Add Mesh",
 }
 
-from . import operators, properties, ui
+from . import operators, properties, ui  # noqa: E402
 
 
 def register():

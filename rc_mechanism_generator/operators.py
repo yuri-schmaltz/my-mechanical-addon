@@ -912,7 +912,6 @@ def _split_object_for_export(
     if abs(plane_no.dot(ref)) > 0.95:
         ref = Vector((0.0, 1.0, 0.0))
     tangent_u = plane_no.cross(ref).normalized()
-    tangent_v = plane_no.cross(tangent_u).normalized()
     offset = max(key_radius * 2.5, mm_to_m(5.0))
     pin_centers = (plane_co + tangent_u * offset, plane_co - tangent_u * offset)
 

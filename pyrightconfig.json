@@ -1,0 +1,9 @@
+{
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none",
+  "exclude": [
+    "**/__pycache__",
+    "dist"
+  ]
+}
