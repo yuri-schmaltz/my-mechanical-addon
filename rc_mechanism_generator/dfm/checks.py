@@ -72,7 +72,7 @@ def _wheelwell_interference_warning(obj: bpy.types.Object, refs: bpy.types.Prope
     for side in ("l", "r"):
         wheelwell = getattr(refs, f"wheelwell_{side}_obj", None)
         if wheelwell is not None and bbox_intersects(obj, wheelwell):
-            warnings.append(f"{obj.name}: intersects WheelWell_{side.upper()} (bbox)")
+            warnings.append(f"{obj.name}: potential interference with WheelWell_{side.upper()} (Box Intersection)")
     return warnings
 
 
@@ -106,7 +106,7 @@ def run_printability_checks(scene: bpy.types.Scene) -> tuple[list[str], list[str
             warnings.append(f"{obj.name}: hole too close to edge (approx)")
 
         ratio = _estimate_overhang_ratio(obj, settings.overhang_warn_deg)
-        if ratio > 0.35:
+        if ratio > 0.50:
             warnings.append(f"{obj.name}: overhang-heavy geometry ({ratio * 100.0:.0f}% faces)")
 
         if _oversize_warning(obj, settings):

@@ -179,3 +179,7 @@ blender --factory-startup --python examples/create_mock_scene.py -- "examples/rc
 - `Tie rod impossible`: ajuste `Servo Horn Length` ou `SteeringArm_Point`.
 - `Shock stroke larger than total length`: reduza curso ou aumente comprimento.
 - `3MF exporter not available`: habilite/exporte somente STL.
+
+## Licenca
+
+Este projeto esta licenciado sob a licenca MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.

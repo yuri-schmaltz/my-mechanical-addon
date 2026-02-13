@@ -245,3 +245,6 @@ print(json.dumps({
     "export_ok": results["e2e"].get("export_pack", {}).get("ok", False),
     "errors": len(results.get("errors", [])),
 }, ensure_ascii=False))
+
+if len(results.get("errors", [])) > 0 or not results["e2e"].get("generate_all", {}).get("ok", False):
+    sys.exit(1)

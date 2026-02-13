@@ -1,0 +1,35 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Blender
+        uses: blender-actions/setup-blender@v4
+        with:
+          blender-version: '4.2.0'
+
+      - name: Zip Addon
+        run: |
+          mkdir -p dist
+          zip -r dist/RC_Mechanism_Generator.zip rc_mechanism_generator
+
+      - name: Run Runtime Evaluation
+        run: |
+          # Use xvfb-run if we ever need GUI features, but background mode is usually enough
+          blender --background --python eval_runtime_blender.py
+
+      - name: Upload Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: eval_outputs/

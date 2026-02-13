@@ -1474,6 +1474,7 @@ class RCGEN_OT_CaptureSelected(bpy.types.Operator):
     bl_idname = "rcgen.capture_selected"
     bl_label = "Capture Selected"
     bl_description = "Assign active object to target pointer"
+    bl_options = {"REGISTER", "UNDO"}
 
     target_path: StringProperty()
 
@@ -1495,6 +1496,7 @@ class RCGEN_OT_AutoCaptureByName(bpy.types.Operator):
     bl_idname = "rcgen.auto_capture_by_name"
     bl_label = "Auto Capture By Name"
     bl_description = "Fill references and hardpoints by common object names"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         settings = context.scene.rcgen_settings
@@ -1556,6 +1558,7 @@ class RCGEN_OT_ValidateAll(bpy.types.Operator):
 class RCGEN_OT_GenerateSuspension(bpy.types.Operator):
     bl_idname = "rcgen.generate_suspension"
     bl_label = "Generate Suspension"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         return {"FINISHED"} if _generate_suspension(context.scene, self) else {"CANCELLED"}
@@ -1564,6 +1567,7 @@ class RCGEN_OT_GenerateSuspension(bpy.types.Operator):
 class RCGEN_OT_UpdateSuspension(bpy.types.Operator):
     bl_idname = "rcgen.update_suspension"
     bl_label = "Update Suspension"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         return {"FINISHED"} if _generate_suspension(context.scene, self) else {"CANCELLED"}
@@ -1572,6 +1576,7 @@ class RCGEN_OT_UpdateSuspension(bpy.types.Operator):
 class RCGEN_OT_GenerateSteering(bpy.types.Operator):
     bl_idname = "rcgen.generate_steering"
     bl_label = "Generate Steering"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         return {"FINISHED"} if _generate_steering(context.scene, self) else {"CANCELLED"}
@@ -1580,6 +1585,7 @@ class RCGEN_OT_GenerateSteering(bpy.types.Operator):
 class RCGEN_OT_UpdateSteering(bpy.types.Operator):
     bl_idname = "rcgen.update_steering"
     bl_label = "Update Steering"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         return {"FINISHED"} if _generate_steering(context.scene, self) else {"CANCELLED"}
@@ -1587,6 +1593,7 @@ class RCGEN_OT_UpdateSteering(bpy.types.Operator):
 class RCGEN_OT_ReinferShockMounts(bpy.types.Operator):
     bl_idname = "rcgen.reinfer_shock_mounts"
     bl_label = "Reinfer Shock Mounts"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         ok, errors = validate_scene_for_suspension(context.scene)
@@ -1603,6 +1610,7 @@ class RCGEN_OT_ReinferShockMounts(bpy.types.Operator):
 class RCGEN_OT_GenerateShocks(bpy.types.Operator):
     bl_idname = "rcgen.generate_shocks"
     bl_label = "Generate Shock/Spring"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         return {"FINISHED"} if _generate_shocks(context.scene, self) else {"CANCELLED"}
@@ -1611,6 +1619,7 @@ class RCGEN_OT_GenerateShocks(bpy.types.Operator):
 class RCGEN_OT_UpdateShocks(bpy.types.Operator):
     bl_idname = "rcgen.update_shocks"
     bl_label = "Update Shock/Spring"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         return {"FINISHED"} if _generate_shocks(context.scene, self) else {"CANCELLED"}
@@ -1642,6 +1651,7 @@ class RCGEN_OT_ExportManufacturingPack(bpy.types.Operator):
 class RCGEN_OT_GenerateAll(bpy.types.Operator):
     bl_idname = "rcgen.generate_all"
     bl_label = "Generate All"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         if not _generate_suspension(context.scene, self):
@@ -1657,6 +1667,7 @@ class RCGEN_OT_GenerateAll(bpy.types.Operator):
 class RCGEN_OT_UpdateAll(bpy.types.Operator):
     bl_idname = "rcgen.update_all"
     bl_label = "Update All"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         if not _generate_suspension(context.scene, self):
@@ -1672,6 +1683,7 @@ class RCGEN_OT_UpdateAll(bpy.types.Operator):
 class RCGEN_OT_OrganizeCollections(bpy.types.Operator):
     bl_idname = "rcgen.organize_collections"
     bl_label = "Organize Collections"
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context: bpy.types.Context):
         _ensure_collections(context.scene)
