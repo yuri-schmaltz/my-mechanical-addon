@@ -1,7 +1,7 @@
 bl_info = {
     "name": "RC Mechanism Generator",
     "author": "Codex",
-    "version": (0, 1, 0),
+    "version": (0, 1, 1),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > RC",
     "description": "Gera suspensao double wishbone, estercamento e coilover parametricos para RC.",
